@@ -3,16 +3,19 @@ const list = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Phila
                 'Albuquerque', 'Tucson', 'Fresno', 'Sacramento', 'Mesa', 'Kansas City', 'Atlanta', 'Long Beach', 'Omaha', 'Raleigh', 'Colorado Springs', 'Miami', 'Virginia Beach', 'Oakland',
                 'Minneapolis', 'Tulsa', 'Arlington', 'New Orleans'];
 const searchBar = document.getElementById('typeahead');
-const suggestions = []
+var suggestions = [];
 
 searchBar.addEventListener('input', (event) => {
+    const input = event.target.value;
+    if(input.length > 0) {
+        const regex = new RegExp(`^${input}`, 'i');
+        suggestions = list.sort().filter(v => regex.test(v));
+    } else {
+        suggestions = []
+    }
     displaySuggestions();
 });
 
-function onInput() {
-    
-}
-
 function displaySuggestions() {
-    document.getElementById('suggestions').innerHTML = (list.map(element => '<li>'+element+'</li>')).join('');
+    document.getElementById('suggestions').innerHTML = (suggestions.map(element => '<li>'+element+'</li>')).join('');
 }
