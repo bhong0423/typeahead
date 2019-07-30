@@ -6,10 +6,10 @@ const list = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Phila
                 'Jersey City', 'Chula Vista', 'Durham', 'Fort Wayne', 'St. Petersburg', 'Laredo', 'Buffalo', 'Madison', 'Lubbock', 'Chandler', 'Scottsdale', 'Reno', 'Glendale', 'Norfolk',
                 'Winston-Salem', 'North Las Vegas', 'Gilbert', 'Chesapeake', 'Irving', 'Hialeah', 'Garland', 'Fremont', 'Richmond', 'Boise', 'Baton Rouge', 'Des Moines'];
 const searchBar = document.getElementById('typeahead');
-const selection = document.getElementById('suggestions');
-const option = document.querySelectorAll('li');
+const suggestionDisplay = document.getElementById('suggestions');
 
 var suggestions = [];
+var firstOption;
 
 searchBar.addEventListener('input', (event) => {
     const input = event.target.value;
@@ -20,14 +20,48 @@ searchBar.addEventListener('input', (event) => {
         suggestions = [];
     }
     displaySuggestions();
+    firstOption = document.querySelector('li');
+    toggleHighlight(firstOption)
 });
 
-selection.addEventListener('click', (event) => {
+suggestionDisplay.addEventListener('click', (event) => {
     searchBar.value = event.target.textContent;
     suggestions = [];
     displaySuggestions();
 });
 
+suggestionDisplay.addEventListener('mouseover', (event) => {
+    if (event.target !== firstOption) {
+        toggleHighlight(event.target);
+        if (firstOption.id === 'highlight') {
+            toggleHighlight(firstOption);
+        }
+    } else if (firstOption.id !== 'highlight') {
+        toggleHighlight(firstOption);
+    }
+});
+
+suggestionDisplay.addEventListener('mouseout', (event) => {
+    event.target.id = null;
+});
+
+searchBar.addEventListener('keydown', (event) => {
+    previousOption = document.getElementById('highlight');
+    if (event.keyCode === 9) {
+        event.preventDefault();
+        toggleHighlight(previousOption);
+        previousOption.id = null;
+        previousOption.nextSibling !== null ? toggleHighlight(previousOption.nextSibling) : toggleHighlight(firstOption);
+    } else if (event.keyCode === 13) {
+        event.preventDefault();
+        searchBar.value = previousOption.textContent;
+    }
+});
+
 function displaySuggestions() {
     document.getElementById('suggestions').innerHTML = (suggestions.map(element => '<li>'+element+'</li>')).join('');
+}
+
+function toggleHighlight(HTMLElement) {
+    HTMLElement.id === 'highlight' ? HTMLElement.id = null : HTMLElement.id = 'highlight';
 }
