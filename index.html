@@ -3,15 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>Typeahead</title>
-        <link rel="stylesheet" type="text/css" href="index.css">
-        <script defer type="text/javascript" src="index.js"></script>
+        <link rel="stylesheet" href="index.css">
     </head>
     <body>
         <div id="top-margin"></div>
-        <div id="content-container">
+        <div id="heading-container">
             <h1>Typeahead</h1>
-            <input id="typeahead" type="text">
-            <ul id="suggestions"></ul>
         </div>
+        <div id="typeahead-container"></div>
     </body>
+    <script src="typeahead.js"></script>
+    <script>new Typeahead("typeahead-container")</script>
 </html>

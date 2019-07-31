@@ -6,7 +6,13 @@ html, body{
     height: 20%;
 }
 
-#content-container {
+#heading-container {
+    height: 10%;
+    width: 100%;
+    text-align: center;
+}
+
+#typeahead-container {
     height: 20%;
     width: 60%;
     margin-left: 20%;
