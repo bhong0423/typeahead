@@ -19,13 +19,13 @@ html, body{
     text-align: center;
 }
 
-input {
+input#typeahead {
     height: 20px;
     width: 100%;
     border: 1px solid lightgrey;
 }
 
-ul {
+ul#suggestions {
     list-style: none;
     text-align: left;
     padding-left: 0;
@@ -33,7 +33,7 @@ ul {
     cursor: default;
 }
 
-li {
+li.suggestion {
     padding: 5px;
     border: 1px solid lightgrey;
 }

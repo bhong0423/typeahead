@@ -5,7 +5,6 @@ const statesList = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 
                 'Lexington', 'Stockton', 'St. Louis', 'Saint Paul', 'Henderson', 'Pittsburgh', 'Cincinnati', 'Anchorage', 'Greensboro', 'Plano', 'Newark', 'Lincoln', 'Orlando', 'Irvine', 'Toledo',
                 'Jersey City', 'Chula Vista', 'Durham', 'Fort Wayne', 'St. Petersburg', 'Laredo', 'Buffalo', 'Madison', 'Lubbock', 'Chandler', 'Scottsdale', 'Reno', 'Glendale', 'Norfolk',
                 'Winston-Salem', 'North Las Vegas', 'Gilbert', 'Chesapeake', 'Irving', 'Hialeah', 'Garland', 'Fremont', 'Richmond', 'Boise', 'Baton Rouge', 'Des Moines'];
-let suggestions;
 
 class Typeahead {
     constructor(containerID) {
@@ -18,29 +17,26 @@ function addEventListeners() {
     const searchBar = document.getElementById('typeahead');
     const suggestionDisplay = document.getElementById('suggestions');
 
-    let HTMLSuggestions;
+    let suggestionLiElements;
     let firstOption;
     let lastOption;
 
     searchBar.addEventListener('input', (event) => {
         const input = event.target.value;
         if (input.length > 0) {
-            const regex = new RegExp(`^${input}`, 'i');
-            suggestions = statesList.sort().filter(word => regex.test(word));
+            displaySuggestions(input);
         } else {
-            suggestions = [];
+            displaySuggestions(null);
         }
-        displaySuggestions();
-        HTMLSuggestions = Array.from(document.querySelectorAll('li.suggestion'));
-        firstOption = HTMLSuggestions[0];
-        lastOption = HTMLSuggestions[HTMLSuggestions.length - 1];
+        suggestionLiElements = document.getElementsByClassName('suggestion');
+        firstOption = suggestionLiElements[0];
+        lastOption = suggestionLiElements[suggestionLiElements.length - 1];
         toggleHighlight(firstOption)
     });
 
     suggestionDisplay.addEventListener('click', (event) => {
         searchBar.value = event.target.textContent;
-        suggestions = [];
-        displaySuggestions();
+        displaySuggestions(null);
     });
 
     suggestionDisplay.addEventListener('mouseover', (event) => {
@@ -60,25 +56,33 @@ function addEventListeners() {
 
     searchBar.addEventListener('keydown', (event) => {
         const previousOption = document.getElementById('highlight');
-        if (event.keyCode === 40) {
+        if (event.keyCode === 40) {                 //down-arrow key
             event.preventDefault();
             toggleHighlight(previousOption);
             previousOption.nextSibling !== null ? toggleHighlight(previousOption.nextSibling) : toggleHighlight(firstOption);
-        } else if (event.keyCode === 38) {
+        } else if (event.keyCode === 38) {          //up-arrow key
             event.preventDefault();
             toggleHighlight(previousOption);
             previousOption.previousSibling !== null ? toggleHighlight(previousOption.previousSibling) : toggleHighlight(lastOption);
-        } else if (event.keyCode === 13) {
+        } else if (event.keyCode === 13) {          //enter key
             event.preventDefault();
             searchBar.value = previousOption.textContent;
+            displaySuggestions(null);
         }
     });
 }
 
-function displaySuggestions() {
-    document.getElementById('suggestions').innerHTML = (suggestions.map(element => '<li class=\'suggestion\'>'+element+'</li>')).join('');
+function displaySuggestions(input) {
+    let suggestions;
+    if (input === null) {
+        suggestions = [];
+    } else {
+        const regex = new RegExp(`^${input}`, 'i');
+        suggestions = statesList.sort().filter(word => regex.test(word));
+    }
+    document.getElementById('suggestions').innerHTML = suggestions.reduce((emptyString, suggestion) => emptyString + '<li class=\'suggestion\'>'+suggestion+'</li>', '');
 }
 
 function toggleHighlight(HTMLElement) {
-    HTMLElement.id === 'highlight' ? HTMLElement.id = null : HTMLElement.id = 'highlight';
+    HTMLElement.id = HTMLElement.id === 'highlight' ? null : 'highlight';
 }
